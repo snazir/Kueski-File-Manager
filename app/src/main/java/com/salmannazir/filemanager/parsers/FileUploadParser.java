@@ -17,33 +17,7 @@ public class FileUploadParser implements BaseParser {
     @Override
     public TaskResult parse(int httpCode, String response) {
         TaskResult result = new TaskResult();
-        if(httpCode == SUCCESS) {
-            try {
-                JSONObject j = new JSONObject(response);
-                String status = j.optString("status");
-                if(status.equalsIgnoreCase("ok")) {
-                    JSONArray arr = j.optJSONArray("results");
-                    if (arr != null) {
-//
-                        result.success(true);
-                    }
-                } else {
-                    result.code = httpCode;
-                    result.message = j.optString("status");
-                }
-            } catch (Exception e) {
-                L.d(getClass().getName() + " :> " + e.getMessage());
-            }
-        } else {
-            try {
-                JSONObject j = new JSONObject(response);
-                result.code = httpCode;
-                result.message = j.optString("status");
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
-
-        }
+        result.success(true);
         return result;
     }
 }

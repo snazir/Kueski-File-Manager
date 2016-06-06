@@ -10,6 +10,7 @@ public class Constants {
     public static final int CAMERA_REQUEST = 1;
     public static final String PREFS_NAME = "FileManagerPrefsFile";    //user preference file name
     public static final String HOME_PATH = Environment.getExternalStorageDirectory().getPath() + "/Kueski";
+    public static final String SNAPSHOT_UPLOAD_URL = "https://02pm7qd9hzps.runscope.net";
     public static final String PREFS_HIDDEN = "prefsHidden";
     public static final String PREFS_COLOR = "prefsColor";
     public static final String PREFS_THUMBNAIL = "prefsThumbnail";

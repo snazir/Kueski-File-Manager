@@ -53,12 +53,16 @@ import com.afollestad.materialdialogs.MaterialDialog;
 import com.salmannazir.filemanager.R;
 import com.salmannazir.filemanager.activities.DirectoryInformationActivity;
 import com.salmannazir.filemanager.activities.HelpManager;
-import com.salmannazir.filemanager.activities.SnapshotActivity;
+import com.salmannazir.filemanager.network.AsyncTaskListener;
+import com.salmannazir.filemanager.network.HttpAsyncRequest;
+import com.salmannazir.filemanager.network.TaskResult;
+import com.salmannazir.filemanager.parsers.FileUploadParser;
 import com.salmannazir.filemanager.prefs.Constants;
 
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Random;
 
 public class EventHandler implements OnClickListener {
 
@@ -867,7 +871,21 @@ public class EventHandler implements OnClickListener {
 
                 case Constants.ZIP_TYPE:
                //     mFileManger.createZipFile(params[0]);
-                    mFileManger.zipFileAtPath(Constants.HOME_PATH,Constants.HOME_PATH+"/Kueski.zip");
+//                    mFileManger.zipFileAtPath(Constants.HOME_PATH, Constants.HOME_PATH+"/Kueski.zip");
+                    if(FileManager.zipDirectory(Constants.HOME_PATH+"/data", Constants.HOME_PATH+"/snapshots/Kueski_"+System.currentTimeMillis()+".zip")) {
+                        AsyncTaskListener mSnapShotUploadListener = new AsyncTaskListener() {
+                            @Override
+                            public void onComplete(TaskResult result) {
+                                if(result.isSuccess()) {
+                                    Toast.makeText(mContext, "Snapshot saved successfully.", Toast.LENGTH_SHORT).show();
+                                }
+                            }
+                        };
+                        HttpAsyncRequest request = new HttpAsyncRequest(mContext, Constants.SNAPSHOT_UPLOAD_URL,
+                                HttpAsyncRequest.RequestType.POST, new FileUploadParser(), mSnapShotUploadListener);
+                        request.addFile("data", Constants.HOME_PATH+"/snapshots/Kueski.zip");
+                        request.execute();
+                    }
                     return null;
 
                 case Constants.DELETE_TYPE:

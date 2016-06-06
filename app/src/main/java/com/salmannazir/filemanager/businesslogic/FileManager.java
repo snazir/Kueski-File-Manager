@@ -61,6 +61,8 @@ public class FileManager {
 
 
         createDirectory(Environment.getExternalStorageDirectory().getPath(), "Kueski");
+        createDirectory(Environment.getExternalStorageDirectory().getPath(), "Kueski/snapshots");
+        createDirectory(Environment.getExternalStorageDirectory().getPath(), "Kueski/data");
 //		mDirectoryPathStack.push("/");
         mDirectoryPathStack.push(Constants.HOME_PATH);
     }
@@ -268,6 +270,7 @@ public class FileManager {
         }
         return true;
     }
+
     private void zipSubFolder(ZipOutputStream out, File folder,
                               int basePathLength) throws IOException {
 
@@ -295,6 +298,7 @@ public class FileManager {
             }
         }
     }
+
     public String getLastPathComponent(String filePath) {
         String[] segments = filePath.split("/");
         if (segments.length == 0)
@@ -361,7 +365,6 @@ public class FileManager {
             e.printStackTrace();
         }
     }
-
 
 
     public int deleteTargetFile(String path) {
@@ -492,7 +495,7 @@ public class FileManager {
                     mDirectoryContent.add(list[i]);
                 }
             }
-			
+
 			/* sort the arraylist that was made from above for loop */
             switch (mDirectorySortType) {
                 case Constants.SORT_NONE:
@@ -635,4 +638,51 @@ public class FileManager {
             }
         }
     }
+
+
+    public static void addDirToZipArchive(ZipOutputStream zos, File fileToZip, String parrentDirectoryName) throws Exception {
+        if (fileToZip == null || !fileToZip.exists()) {
+            return;
+        }
+
+        String zipEntryName = fileToZip.getName();
+        if (parrentDirectoryName != null && !parrentDirectoryName.isEmpty()) {
+            zipEntryName = parrentDirectoryName + "/" + fileToZip.getName();
+        }
+
+        if (fileToZip.isDirectory()) {
+            System.out.println("+" + zipEntryName);
+            for (File file : fileToZip.listFiles()) {
+                addDirToZipArchive(zos, file, zipEntryName);
+            }
+        } else {
+            System.out.println("   " + zipEntryName);
+            byte[] buffer = new byte[1024];
+            FileInputStream fis = new FileInputStream(fileToZip);
+            zos.putNextEntry(new ZipEntry(zipEntryName));
+            int length;
+            while ((length = fis.read(buffer)) > 0) {
+                zos.write(buffer, 0, length);
+            }
+            zos.closeEntry();
+            fis.close();
+        }
+    }
+
+    public static boolean zipDirectory(String srcDir, String outputZipFile) {
+        try {
+            FileOutputStream fos = new FileOutputStream(outputZipFile);
+            ZipOutputStream zos = new ZipOutputStream(fos);
+            addDirToZipArchive(zos, new File(srcDir), null);
+            zos.flush();
+            fos.flush();
+            zos.close();
+            fos.close();
+            return true;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+
 }
