@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    >
+    <EditText
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="File Name"
+        android:lines="1"
+        android:maxLines="1"
+        android:imeOptions="actionNext"
+        android:id="@+id/et_file_name"
+        />
+
+    <EditText
+        android:id="@+id/et_file_body"
+        android:layout_below="@+id/et_file_name"
+        android:hint="Please type File Body Text Here"
+        android:inputType="textMultiLine"
+        android:minLines="1"
+        android:maxLines="10"
+        android:gravity="top|left"
+        android:layout_height="300dp"
+        android:layout_width="match_parent"
+        android:scrollbars="vertical"
+        />
+
+
+</RelativeLayout>
